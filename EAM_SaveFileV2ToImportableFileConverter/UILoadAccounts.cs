@@ -37,14 +37,18 @@ namespace EAM_SaveFileV2ToImportableFileConverter
                 if (diag.ShowDialog() == DialogResult.OK)
                 {
                     try
-                    {
+                    {                        
                         byte[] data = File.ReadAllBytes(diag.FileName);
                         AesCryptographyService acs = new AesCryptographyService();
                         frm.Accounts = (List<AccountInfo>)ByteArrayToObject(acs.Decrypt(data));
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         lWarning.Visible = true;
+                        
+                        string errorMessasge = $"File:{Environment.NewLine}{diag.FileName}{Environment.NewLine}{Environment.NewLine}Message:{Environment.NewLine}{ex.Message}{Environment.NewLine}{Environment.NewLine}Stacktrace:{Environment.NewLine}{ex.StackTrace}";
+                        MessageBox.Show($"ERROR MESSAGE HAS BEEN COPIED TO YOUR CLIPBOARD{Environment.NewLine}{Environment.NewLine}{errorMessasge}", "Failed to parse save file");
+                        Clipboard.SetText(errorMessasge);
                     }
                 }
             }
